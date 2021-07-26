@@ -4,15 +4,23 @@ window.onload = () => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             googleUser = user;
-            document.querySelector("#helloTitle").innerHTML = `Hello, ${googleUser.displayName}!`
+            console.log(googleUser);
+            document.querySelector("#helloTitle").innerHTML = `Hello, ${googleUser.displayName ? googleUser.displayName : googleUser.email.split('@')[0]}!`
         } else {
-            console.log("not logged in!");
+            document.querySelector(".hero").innerHTML = "You are not logged in.";
         }
     });
 }
 
-const createNoteButton = document.querySelector("#createNoteButton");
-createNoteButton.addEventListener("click", () => {
+document.querySelector("#logoutButton").addEventListener("click", () => {
+    firebase.auth().signOut().then(() => {
+        window.location = "index.html";
+    }).catch((error) => {
+        alert(error);
+    });
+})
+
+document.querySelector("#createNoteButton").addEventListener("click", () => {
     const payload = {
         title: document.querySelector("#noteTitle").value,
         text: document.querySelector("#noteText").value,
